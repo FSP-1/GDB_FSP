@@ -31,7 +31,54 @@ FROM cliente
 GROUP BY ciudad;
 
 /*8*/
-SELECT  cliente.ciudad,MAx
+SELECT  cliente.id, CONCAT_WS(' ',cliente.nombre,cliente.apellido1, cliente.apellido2) AS cliente, pedido.fecha,pedido.total
 FROM cliente INNER JOIN pedido
 ON cliente.id = pedido.id_cliente
-GROUP BY cliente.ciudad;
+WHERE pedido.total =(SELECT MAX(pedido.total) FROM pedido WHERE pedido.id_cliente = cliente.id );
+
+/*9*/
+SELECT  cliente.id, CONCAT_WS(' ',cliente.nombre,cliente.apellido1, cliente.apellido2) AS cliente, pedido.fecha,pedido.total
+FROM cliente INNER JOIN pedido
+ON cliente.id = pedido.id_cliente
+WHERE pedido.total =(SELECT MAX(pedido.total) FROM pedido WHERE pedido.id_cliente = cliente.id )
+GROUP BY cliente.id, pedido.fecha,pedido.total
+HAVING pedido.total >2000;
+
+/*10*/
+SELECT  comercial.id,CONCAT_WS(' ',comercial.nombre,comercial.apellido1, comercial.apellido2) AS comercial,MAX(pedido.total)
+FROM comercial INNER JOIN pedido
+ON comercial.id = pedido.id_comercial
+WHERE pedido.fecha = '2016-08-17'
+GROUP BY comercial.id;
+
+/*11*/
+SELECT  cliente.id, CONCAT_WS(' ',cliente.nombre,cliente.apellido1, cliente.apellido2) AS cliente, COUNT(pedido.id_cliente) AS total_pedidos
+FROM cliente LEFT JOIN pedido
+ON cliente.id = pedido.id_cliente
+GROUP BY cliente.id;
+
+/*12*/
+SELECT  cliente.id, CONCAT_WS(' ',cliente.nombre,cliente.apellido1, cliente.apellido2) AS cliente, COUNT(pedido.id_cliente) AS total_pedidos
+FROM cliente INNER JOIN pedido
+ON cliente.id = pedido.id_cliente
+WHERE YEAR(pedido.fecha) = 2017
+GROUP BY cliente.id;
+
+/*13*/
+SELECT  cliente.id, CONCAT_WS(' ',cliente.nombre,cliente.apellido1, cliente.apellido2) AS cliente, IFNULL(MAX(pedido.total),0) AS total_dinero
+FROM cliente LEFT JOIN pedido
+ON cliente.id = pedido.id_cliente
+GROUP BY cliente.id;
+
+/*14*/
+SELECT  YEAR(pedido.fecha),pedido.total
+FROM pedido
+WHERE total =(SELECT MAX(pedido.total) FROM pedido group by pedido.fecha )
+GROUP BY pedido.id,pedido.total;
+
+/*15*/
+SELECT COUNT(id)
+FROM pedido 
+WHERE fecha like '2015%' or  fecha  like '2016%' 
+GROUP BY id_cliente;
+
