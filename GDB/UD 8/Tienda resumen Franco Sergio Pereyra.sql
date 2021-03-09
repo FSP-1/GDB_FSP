@@ -149,23 +149,17 @@ GROUP BY  fabricante.nombre
 ORDER BY 2 DESC;
 
 /*27*/
-SELECT fabricante.nombre, COUNT(producto.codigo) AS total_producto
-FROM fabricante left JOIN producto
-ON producto.codigo_fabricante = fabricante.codigo
-WHERE precio >=220
-GROUP BY  fabricante.nombre 
-
-UNION 
-
-SELECT fabricante.nombre, COUNT(producto.codigo) AS total_producto
-FROM fabricante LEFT JOIN producto
-ON producto.codigo_fabricante = fabricante.codigo
-where producto.codigo not in (SELECT COUNT(producto.codigo) AS total_producto
-FROM fabricante left JOIN producto
-ON producto.codigo_fabricante = fabricante.codigo
-WHERE precio >=220
-GROUP BY  fabricante.nombre  )
-GROUP BY  fabricante.nombre 
+SELECT
+   fabricante.nombre,
+   COUNT(t.codigo_fabricante)
+FROM 
+   fabricante LEFT JOIN (   
+      SELECT producto.codigo_fabricante
+       FROM producto
+       WHERE producto.precio >= 220) AS t
+   ON fabricante.codigo = t.codigo_fabricante
+GROUP BY
+   fabricante.codigo
 ORDER BY 2 DESC;
 
 
