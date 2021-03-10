@@ -31,7 +31,20 @@ ORDER BY COUNT(asignatura.id) DESC;
 
 /*6*/
 SELECT grado.nombre ,COUNT(asignatura.id) as total_asignaturas
-FROM grado LEFT JOIN asignatura
+FROM grado INNER JOIN asignatura
 ON grado.id = asignatura.id_grado
 GROUP BY grado.id
 HAVING COUNT(asignatura.id) > 40;
+
+/*7*/
+SELECT grado.nombre ,asignatura.tipo, SUM(asignatura.creditos)
+FROM grado INNER JOIN asignatura
+ON grado.id = asignatura.id_grado
+GROUP BY grado.id,asignatura.tipo
+ORDER BY SUM(asignatura.creditos)DESC;
+
+/*8*/
+SELECT  DISTINCT  COUNT(alumno_se_matricula_asignatura.id_asignatura), curso_escolar.anyo_inicio
+FROM curso_escolar INNER JOIN alumno_se_matricula_asignatura
+ON alumno_se_matricula_asignatura.id_curso_escolar = curso_escolar.id
+GROUP BY alumno_se_matricula_asignatura.id_asignatura,curso_escolar.anyo_inicio
