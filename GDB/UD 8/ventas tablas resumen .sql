@@ -73,13 +73,12 @@ GROUP BY cliente.id;
 /*14*/
 SELECT  YEAR(pedido.fecha),max(pedido.total)
 FROM pedido 
-GROUP BY pedido.fecha
-HAVING YEAR(pedido.fecha)=2015 and max(pedido.total)
-limit 0,1;
+GROUP BY YEAR(pedido.fecha);
+
 
 /*15*/
-SELECT COUNT(pedido.id_cliente),YEAR(pedido.fecha)
+SELECT COUNT(pedido.id),YEAR(pedido.fecha)
 FROM pedido INNER JOIN cliente
 ON cliente.id = pedido.id_cliente
-GROUP BY cliente.id
-HAVING YEAR(pedido.fecha)= 2015
+GROUP BY YEAR(pedido.fecha);
+                      
