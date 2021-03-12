@@ -44,13 +44,13 @@ GROUP BY grado.id,asignatura.tipo
 ORDER BY SUM(asignatura.creditos)DESC;
 
 /*8*/
-SELECT  COUNT(alumno_se_matricula_asignatura.id_asignatura) as total_asignaturas, curso_escolar.anyo_inicio
+SELECT COUNT(DISTINCT alumno_se_matricula_asignatura.id_alumno) as total_alumnos, curso_escolar.anyo_inicio
 FROM curso_escolar INNER JOIN alumno_se_matricula_asignatura
 ON alumno_se_matricula_asignatura.id_curso_escolar = curso_escolar.id
-GROUP BY curso_escolar.anyo_inicio;
+GROUP BY curso_escolar.id ;
 
 /*9*/
-SELECT persona.id, CONCAT_WS(' ',persona.apellido1, persona.apellido2, persona.nombre) AS profesor, COUNT(asignatura.id) as total_asignaturas
+SELECT persona.id, CONCAT_WS(' ',persona.nombre, persona.apellido1, persona.a) AS profesor, COUNT(asignatura.id) as total_asignaturas
 FROM persona INNER JOIN profesor
 ON persona.id = profesor.id_profesor
 LEFT JOIN asignatura
@@ -58,3 +58,4 @@ ON profesor.id_profesor = asignatura.id_profesor
 WHERE persona.tipo = 'profesor'
 GROUP BY persona.id
 ORDER BY COUNT(asignatura.id) DESC;
+
