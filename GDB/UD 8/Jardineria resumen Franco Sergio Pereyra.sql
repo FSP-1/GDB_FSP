@@ -92,11 +92,10 @@ FROM
 
 /*16*/
 SELECT 
-       SUM(precio_unidad * cantidad) 
-           AS base_imponible,
-    TRUNCATE((((SUM(precio_unidad * cantidad)) * 21) / 100),
+    SUM(precio_unidad * cantidad) AS base_imponible,
+    TRUNCATE((SUM(precio_unidad * cantidad) * 21 / 100),
         2) AS IVA,
-    SUM(precio_unidad * cantidad)  +  TRUNCATE((((SUM(precio_unidad * cantidad)) * 21) / 100),
+    SUM(precio_unidad * cantidad) + TRUNCATE((SUM(precio_unidad * cantidad) * 21 / 100),
         2) AS total_facturado
 FROM
     detalle_pedido
@@ -104,23 +103,28 @@ GROUP BY codigo_producto;
 
 /*17*/
 SELECT 
-        SUM(precio_unidad * cantidad) 
-           AS base_imponible,
-    TRUNCATE((((SUM(precio_unidad * cantidad)) * 21) / 100),
+    SUM(precio_unidad * cantidad) AS base_imponible,
+    TRUNCATE((SUM(precio_unidad * cantidad) * 21 / 100),
         2) AS IVA,
-    SUM(precio_unidad * cantidad)  +  TRUNCATE((((SUM(precio_unidad * cantidad)) * 21) / 100),
-        2) AS total_facturado, codigo_producto
+    SUM(precio_unidad * cantidad) + TRUNCATE((SUM(precio_unidad * cantidad) * 21 / 100),
+        2) AS total_facturado,
+    codigo_producto
 FROM
     detalle_pedido
 GROUP BY codigo_producto
 HAVING codigo_producto LIKE 'OR%';
 
 /*18*/
-SELECT DISTINCT producto.nombre,SUM(detalle_pedido.cantidad) AS unidades_vendidas,
-    SUM(precio_unidad * cantidad)  +  TRUNCATE((((SUM(precio_unidad * cantidad)) * 21) / 100),
-        2) AS total_facturado
-FROM detalle_pedido INNER JOIN producto
-GROUP BY detalle_pedido.codigo_producto ,producto.nombre
-HAVING total_facturado >3000 ;
-
-
+SELECT 
+    producto.nombre,
+    SUM(detalle_pedido.cantidad) AS unidades_vendidas,
+    SUM(detalle_pedido.precio_unidad * detalle_pedido.cantidad) AS total_facturado,
+    SUM(detalle_pedido.precio_unidad * detalle_pedido.cantidad) + TRUNCATE((SUM(detalle_pedido.precio_unidad * detalle_pedido.cantidad) * 21 / 100),
+        2) AS IVA
+FROM
+    detalle_pedido
+        INNER JOIN
+    producto
+    ON  producto.codigo_producto  = detalle_pedido.codigo_producto
+GROUP BY detalle_pedido.codigo_producto
+HAVING total_facturado > 3000;
