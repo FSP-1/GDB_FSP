@@ -3,12 +3,12 @@
 SELECT  fabricante.*, producto.nombre
 FROM  producto RIGHT JOIN  fabricante
 ON fabricante.codigo=producto.codigo_fabricante
-WHERE producto.codigo_fabricante IS NULL OR producto.codigo_fabricante IS NOT NULL;
+WHERE producto.codigo_fabricante IS NOT NULL;
 /*LEFT*/
 SELECT  fabricante.*, producto.nombre
 FROM fabricante  LEFT JOIN   producto
 ON fabricante.codigo=producto.codigo_fabricante
-WHERE producto.codigo_fabricante IS NULL OR producto.codigo_fabricante IS NOT NULL;
+WHERE producto.codigo_fabricante IS NOT NULL;
 
 /*2*/
 /*RIGH*/
