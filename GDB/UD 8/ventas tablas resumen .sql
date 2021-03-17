@@ -7,7 +7,7 @@ SELECT TRUNCATE(AVG(total),2)
 FROM pedido;
 
 /*3*/
-SELECT DISTINCT(COUNT(comercial.id))
+SELECT (COUNT DISTINCT comercial.id)
 FROM comercial INNER JOIN pedido
 ON comercial.id = pedido.id_comercial
 GROUP BY comercial.id;
