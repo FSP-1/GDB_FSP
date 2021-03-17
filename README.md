@@ -1,2 +1,2 @@
 # GDB_FSP
-## Consultas echas por Franco Sergio Pereyra
+## Consultas hechas por Franco Sergio Pereyra
