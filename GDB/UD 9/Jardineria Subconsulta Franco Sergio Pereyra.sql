@@ -12,14 +12,15 @@ WHERE precio_venta = (SELECT MAX(precio_venta)
                         FROM producto);
          
 /*3*/
-SELECT producto.codigo_producto, producto.nombre, MAX(t.numero_unidades)
+SELECT producto.codigo_producto, producto.nombre, t.numero_unidades
 FROM producto INNER JOIN  
  (SELECT detalle_pedido.codigo_producto ,SUM(detalle_pedido.cantidad) AS numero_unidades
                                   FROM detalle_pedido 
                                   GROUP BY  detalle_pedido.codigo_producto) as t
 ON producto.codigo_producto = t.codigo_producto
-GROUP BY producto.codigo_producto;
-
+GROUP BY producto.codigo_producto
+ORDER BY 3 DESC
+LIMIT 0,1;
 /*4*/
 SELECT *
 FROM cliente
@@ -44,7 +45,8 @@ FROM producto INNER JOIN
                                   FROM detalle_pedido 
                                   GROUP BY  detalle_pedido.codigo_producto) as t
 ON producto.codigo_producto = t.codigo_producto
-GROUP BY producto.codigo_producto;
+GROUP BY producto.codigo_producto
+ORDER BY 3 ASC;
 
 /*7*/
 SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1,empleado.apellido2) AS empleado, empleado.email
@@ -66,6 +68,14 @@ FROM producto
 WHERE precio_venta >= ALL (SELECT precio_venta
         FROM producto);
 /*10*/
+SELECT producto.codigo_producto, producto.nombre, MIN(t.numero_unidades)
+FROM producto INNER JOIN  
+ (SELECT detalle_pedido.codigo_producto ,SUM(detalle_pedido.cantidad) AS numero_unidades
+                                  FROM detalle_pedido 
+                                  GROUP BY  detalle_pedido.codigo_producto) as t
+ON producto.codigo_producto = t.codigo_producto
+GROUP BY producto.codigo_producto
+ORDER BY 3 ASC;
 
 /*Subconsultas con IN y NOT IN*/    
 /*11*/
