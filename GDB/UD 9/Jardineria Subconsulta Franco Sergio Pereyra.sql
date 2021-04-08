@@ -25,17 +25,23 @@ FROM producto INNER JOIN  total_unidades
 ON producto.codigo_producto = total_unidades.codigo_producto
 WHERE total_unidades.total_unidad = (SELECT MAX(total_unidad) FROM total_unidades );
 
+CREATE VIEW total_unidades AS
+SELECT SUM(detalle_pedido.cantidad) AS total_unidad,
+	    detalle_pedido.codigo_producto AS codigo_producto
+      FROM detalle_pedido INNER JOIN producto  
+      WHERE producto.codigo_producto = detalle_pedido.codigo_producto 
+      GROUP BY detalle_pedido.codigo_producto;
+/* Con operadores básicos de comparación*/
 
 /*4*/
-SELECT *
+SELECT codigo_cliente, cliente.limite_credito
 FROM cliente
-WHERE limite_credito > (
-   SELECT total
-   FROM pago
-   WHERE pago.codigo_cliente = (
-      SELECT cliente.codigo_cliente
-      FROM cliente
-      WHERE pago.codigo_cliente = cliente.codigo_cliente));
+WHERE cliente.codigo_cliente = (
+   SELECT SUM(total)
+   FROM pago 
+   WHERE pago.codigo_cliente = cliente.codigo_cliente
+      GROUP BY pago.codigo_cliente
+      HAVING  cliente.limite_credito < SUM(total));
 
 /*5*/
 SELECT *
@@ -50,12 +56,11 @@ ON producto.codigo_producto = total_unidades.codigo_producto
 WHERE total_unidades.total_unidad = (SELECT MIN(total_unidad) FROM total_unidades );
 
 /*7*/
-SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1,empleado.apellido2) AS empleado, empleado.email
+SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1,empleado.apellido2) AS empleado, empleado.email, empleado.codigo_jefe
+FROM empleado 
+WHERE  empleado.codigo_jefe = (SELECT  DISTINCT(jefe.codigo_empleado)
 FROM empleado INNER JOIN empleado AS jefe
-ON empleado.codigo_jefe = jefe.codigo_empleado
-WHERE  jefe.codigo_empleado = (SELECT  DISTINCT(jefe.codigo_empleado)
-FROM empleado INNER JOIN empleado AS jefe
-ON empleado.codigo_jefe = jefe.codigo_empleado where  jefe.nombre= 'Alberto '  );
+ON empleado.codigo_jefe = jefe.codigo_empleado where  jefe.nombre= 'Alberto ');
                        
 /*Subconsultas con ALL y ANY*/
 /*8*/
