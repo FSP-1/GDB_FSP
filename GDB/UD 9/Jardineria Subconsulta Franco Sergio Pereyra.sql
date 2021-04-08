@@ -1,3 +1,11 @@
+/*Mi CREATE VIEW */
+
+CREATE VIEW total_unidades AS
+SELECT SUM(detalle_pedido.cantidad) AS total_unidad,
+	    detalle_pedido.codigo_producto as codigo_producto
+      FROM detalle_pedido inner join producto  
+      where producto.codigo_producto = detalle_pedido.codigo_producto 
+      GROUP BY detalle_pedido.codigo_producto;
 /* Con operadores básicos de comparación*/
 /*1*/
 SELECT CONCAT_WS(' ',cliente.nombre_cliente,cliente.apellido_contacto) AS cliente
@@ -12,16 +20,10 @@ WHERE precio_venta = (SELECT MAX(precio_venta)
                         FROM producto);
          
 /*3*/
-SELECT producto.codigo_producto, producto.nombre, SUM(detalle_pedido.cantidad) AS numero_unidades
-FROM producto INNER JOIN  detalle_pedido					
-ON producto.codigo_producto = detalle_pedido.codigo_producto
-GROUP BY producto.codigo_producto
-HAVING SUM(detalle_pedido.cantidad)  >= ALL (SELECT SUM(detalle_pedido.cantidad)
-      FROM detalle_pedido inner join producto  
-      where producto.codigo_producto = detalle_pedido.codigo_producto 
-      GROUP BY detalle_pedido.codigo_producto
-      );
-
+SELECT producto.codigo_producto, producto.nombre, total_unidades.total_unidad AS numero_unidades
+FROM producto INNER JOIN  total_unidades					
+ON producto.codigo_producto = total_unidades.codigo_producto
+WHERE total_unidades.total_unidad = (SELECT MAX(total_unidad) FROM total_unidades );
 
 
 /*4*/
@@ -42,14 +44,10 @@ WHERE cantidad_en_stock = (SELECT MAX(cantidad_en_stock)
                         FROM producto);
                         
 /*6*/
-SELECT producto.codigo_producto, producto.nombre, SUM(detalle_pedido.cantidad) AS numero_unidades
-FROM producto INNER JOIN  detalle_pedido					
-ON producto.codigo_producto = detalle_pedido.codigo_producto
-GROUP BY producto.codigo_producto
-HAVING SUM(detalle_pedido.cantidad) = (SELECT MIN(detalle_pedido.cantidad )
-      FROM detalle_pedido inner join producto  
-      where producto.codigo_producto = detalle_pedido.codigo_producto 
-      );
+SELECT producto.codigo_producto, producto.nombre, total_unidades.total_unidad AS numero_unidades
+FROM producto INNER JOIN  total_unidades					
+ON producto.codigo_producto = total_unidades.codigo_producto
+WHERE total_unidades.total_unidad = (SELECT MIN(total_unidad) FROM total_unidades );
 
 /*7*/
 SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1,empleado.apellido2) AS empleado, empleado.email
@@ -71,15 +69,10 @@ FROM producto
 WHERE precio_venta >= ALL (SELECT precio_venta
         FROM producto);
 /*10*/
-SELECT producto.codigo_producto, producto.nombre, SUM(detalle_pedido.cantidad) AS numero_unidades
-FROM producto INNER JOIN  detalle_pedido					
-ON producto.codigo_producto = detalle_pedido.codigo_producto
-GROUP BY producto.codigo_producto
-HAVING SUM(detalle_pedido.cantidad) <= ALL (SELECT SUM(detalle_pedido.cantidad)
-      FROM detalle_pedido inner join producto  
-      where producto.codigo_producto = detalle_pedido.codigo_producto 
-      GROUP BY detalle_pedido.codigo_producto
-      );
+SELECT producto.codigo_producto, producto.nombre, total_unidades.total_unidad AS numero_unidades
+FROM producto INNER JOIN  total_unidades					
+ON producto.codigo_producto = total_unidades.codigo_producto
+WHERE total_unidades.total_unidad <= ALL (SELECT total_unidad FROM total_unidades );
 /*Subconsultas con IN y NOT IN*/    
 /*11*/
 SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1) AS empleado, puesto
@@ -155,4 +148,3 @@ FROM detalle_pedido
 WHERE   EXISTS (SELECT pedido.codigo_pedido
 	FROM  pedido 
     WHERE pedido.codigo_pedido = detalle_pedido.codigo_pedido);
-
