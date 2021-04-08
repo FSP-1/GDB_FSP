@@ -1,10 +1,10 @@
 /*Mi CREATE VIEW */
 
-CREATE VIEW total_unidades AS
+CREATE VIEW unidades AS
 SELECT SUM(detalle_pedido.cantidad) AS total_unidad,
-	    detalle_pedido.codigo_producto as codigo_producto
-      FROM detalle_pedido inner join producto  
-      where producto.codigo_producto = detalle_pedido.codigo_producto 
+	    detalle_pedido.codigo_producto AS codigo_producto
+      FROM detalle_pedido INNER JOIN producto  
+      WHERE producto.codigo_producto = detalle_pedido.codigo_producto 
       GROUP BY detalle_pedido.codigo_producto;
 /* Con operadores básicos de comparación*/
 /*1*/
@@ -20,17 +20,11 @@ WHERE precio_venta = (SELECT MAX(precio_venta)
                         FROM producto);
          
 /*3*/
-SELECT producto.codigo_producto, producto.nombre, total_unidades.total_unidad AS numero_unidades
-FROM producto INNER JOIN  total_unidades					
-ON producto.codigo_producto = total_unidades.codigo_producto
-WHERE total_unidades.total_unidad = (SELECT MAX(total_unidad) FROM total_unidades );
+SELECT producto.codigo_producto, producto.nombre, unidades.total_unidad AS numero_unidades
+FROM producto INNER JOIN  unidades					
+ON producto.codigo_producto = unidades.codigo_producto
+WHERE unidades.total_unidad = (SELECT MAX(total_unidad) FROM unidades );
 
-CREATE VIEW total_unidades AS
-SELECT SUM(detalle_pedido.cantidad) AS total_unidad,
-	    detalle_pedido.codigo_producto AS codigo_producto
-      FROM detalle_pedido INNER JOIN producto  
-      WHERE producto.codigo_producto = detalle_pedido.codigo_producto 
-      GROUP BY detalle_pedido.codigo_producto;
 /* Con operadores básicos de comparación*/
 
 /*4*/
@@ -50,10 +44,10 @@ WHERE cantidad_en_stock = (SELECT MAX(cantidad_en_stock)
                         FROM producto);
                         
 /*6*/
-SELECT producto.codigo_producto, producto.nombre, total_unidades.total_unidad AS numero_unidades
-FROM producto INNER JOIN  total_unidades					
-ON producto.codigo_producto = total_unidades.codigo_producto
-WHERE total_unidades.total_unidad = (SELECT MIN(total_unidad) FROM total_unidades );
+SELECT producto.codigo_producto, producto.nombre, unidades.total_unidad AS numero_unidades
+FROM producto INNER JOIN  unidades					
+ON producto.codigo_producto = unidades.codigo_producto
+WHERE unidades.total_unidad = (SELECT MIN(total_unidad) FROM unidades );
 
 /*7*/
 SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1,empleado.apellido2) AS empleado, empleado.email, empleado.codigo_jefe
@@ -74,10 +68,11 @@ FROM producto
 WHERE precio_venta >= ALL (SELECT precio_venta
         FROM producto);
 /*10*/
-SELECT producto.codigo_producto, producto.nombre, total_unidades.total_unidad AS numero_unidades
-FROM producto INNER JOIN  total_unidades					
-ON producto.codigo_producto = total_unidades.codigo_producto
-WHERE total_unidades.total_unidad <= ALL (SELECT total_unidad FROM total_unidades );
+SELECT producto.codigo_producto, producto.nombre, unidades.total_unidad AS numero_unidades
+FROM producto INNER JOIN  unidades					
+ON producto.codigo_producto = unidades.codigo_producto
+WHERE unidades.total_unidad <= ALL (SELECT total_unidad FROM unidades );
+
 /*Subconsultas con IN y NOT IN*/    
 /*11*/
 SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1) AS empleado, puesto
