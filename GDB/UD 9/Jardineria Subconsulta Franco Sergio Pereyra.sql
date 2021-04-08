@@ -16,9 +16,10 @@ SELECT producto.codigo_producto, producto.nombre, SUM(detalle_pedido.cantidad) A
 FROM producto INNER JOIN  detalle_pedido					
 ON producto.codigo_producto = detalle_pedido.codigo_producto
 GROUP BY producto.codigo_producto
-HAVING SUM(detalle_pedido.cantidad) > (SELECT MAX(detalle_pedido.cantidad )
+HAVING SUM(detalle_pedido.cantidad)  >= ALL (SELECT SUM(detalle_pedido.cantidad)
       FROM detalle_pedido inner join producto  
       where producto.codigo_producto = detalle_pedido.codigo_producto 
+      GROUP BY detalle_pedido.codigo_producto
       );
 
 
@@ -74,11 +75,11 @@ SELECT producto.codigo_producto, producto.nombre, SUM(detalle_pedido.cantidad) A
 FROM producto INNER JOIN  detalle_pedido					
 ON producto.codigo_producto = detalle_pedido.codigo_producto
 GROUP BY producto.codigo_producto
-HAVING SUM(detalle_pedido.cantidad) <= ALL (SELECT detalle_pedido.cantidad 
+HAVING SUM(detalle_pedido.cantidad) <= ALL (SELECT SUM(detalle_pedido.cantidad)
       FROM detalle_pedido inner join producto  
       where producto.codigo_producto = detalle_pedido.codigo_producto 
+      GROUP BY detalle_pedido.codigo_producto
       );
-
 /*Subconsultas con IN y NOT IN*/    
 /*11*/
 SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1) AS empleado, puesto
