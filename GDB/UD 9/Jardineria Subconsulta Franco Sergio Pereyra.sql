@@ -117,32 +117,43 @@ INNER JOIN detalle_pedido
 ON detalle_pedido.codigo_pedido  = pedido.codigo_pedido
 INNER JOIN producto
 ON  producto.codigo_producto  = detalle_pedido.codigo_producto
-WHERE producto.gama ='Frutales' AND oficina.codigo_oficina NOT IN (SELECT empleado.codigo_oficina
+WHERE producto.gama ='Frutales' AND oficina.codigo_oficina  IN (SELECT empleado.codigo_oficina
 	FROM  empleado);
 
- /* Subconsultas con EXISTS y NOT EXISTS*/     
 /*17*/
+SELECT *
+FROM cliente
+WHERE codigo_cliente NOT  IN (SELECT pago.codigo_cliente
+	FROM  pago) 
+    
+    AND  
+    
+    codigo_cliente   IN (SELECT pedido.codigo_cliente
+	FROM  pedido);
+    
+ /* Subconsultas con EXISTS y NOT EXISTS*/     
+/*18*/
 SELECT *
 FROM cliente
 WHERE NOT EXISTS (SELECT pago.codigo_cliente
 	FROM  pago
     WHERE pago.codigo_cliente = cliente.codigo_cliente );
     
-/*18*/
+/*19*/
 SELECT *
 FROM cliente
 WHERE  EXISTS (SELECT pago.codigo_cliente
 	FROM  pago
     WHERE pago.codigo_cliente = cliente.codigo_cliente );
     
-/*19*/
+/*20*/
 SELECT *
 FROM detalle_pedido 
 WHERE  NOT EXISTS (SELECT pedido.codigo_pedido
 	FROM  pedido 
     WHERE pedido.codigo_pedido = detalle_pedido.codigo_pedido);
     
-/*20*/
+/*21*/
 SELECT *
 FROM detalle_pedido 
 WHERE   EXISTS (SELECT pedido.codigo_pedido
