@@ -95,10 +95,10 @@ WHERE codigo_cliente  IN (SELECT pago.codigo_cliente
 	FROM  pago);
     
 /*14*/
-SELECT *
-FROM detalle_pedido 
-WHERE codigo_pedido  NOT IN (SELECT pedido.codigo_pedido
-	FROM  pedido);
+SELECT producto.codigo_producto
+FROM producto
+WHERE codigo_producto NOT IN(SELECT codigo_producto
+FROM detalle_pedido);
     
 /*15*/
 SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1,empleado.apellido2) AS empleado, empleado.puesto, oficina.telefono
