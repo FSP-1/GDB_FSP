@@ -1,11 +1,13 @@
-/*Mi CREATE VIEW */
+/*Mi CREATE VIEW*/
 
-CREATE VIEW unidades AS
+CREATE OR REPLACE VIEW unidades AS
 SELECT SUM(detalle_pedido.cantidad) AS total_unidad,
 	    detalle_pedido.codigo_producto AS codigo_producto
       FROM detalle_pedido INNER JOIN producto  
+      ON producto.codigo_producto = detalle_pedido.codigo_producto
       WHERE producto.codigo_producto = detalle_pedido.codigo_producto 
       GROUP BY detalle_pedido.codigo_producto;
+      
 /* Con operadores básicos de comparación*/
 /*1*/
 SELECT CONCAT_WS(' ',cliente.nombre_cliente,cliente.apellido_contacto) AS cliente
@@ -28,14 +30,14 @@ WHERE unidades.total_unidad = (SELECT MAX(total_unidad) FROM unidades );
 /* Con operadores básicos de comparación*/
 
 /*4*/
-SELECT codigo_cliente, cliente.limite_credito
-FROM cliente
-WHERE cliente.codigo_cliente = (
+EXPLAIN SELECT DISTINCT cliente.codigo_cliente, cliente.limite_credito, cliente.nombre_cliente
+FROM cliente 
+WHERE cliente.limite_credito > (
    SELECT SUM(total)
    FROM pago 
-   WHERE pago.codigo_cliente = cliente.codigo_cliente
-      GROUP BY pago.codigo_cliente
-      HAVING  cliente.limite_credito < SUM(total));
+   WHERE pago.codigo_cliente = cliente.codigo_cliente);
+   
+
 
 /*5*/
 SELECT *
@@ -52,9 +54,9 @@ WHERE unidades.total_unidad = (SELECT MIN(total_unidad) FROM unidades );
 /*7*/
 SELECT CONCAT_WS(' ',empleado.nombre,empleado.apellido1,empleado.apellido2) AS empleado, empleado.email, empleado.codigo_jefe
 FROM empleado 
-WHERE  empleado.codigo_jefe = (SELECT  DISTINCT(jefe.codigo_empleado)
-FROM empleado INNER JOIN empleado AS jefe
-ON empleado.codigo_jefe = jefe.codigo_empleado where  jefe.nombre= 'Alberto ');
+WHERE  empleado.codigo_jefe = (SELECT  codigo_empleado
+FROM  empleado  
+where  empleado.nombre= 'Alberto ');
                        
 /*Subconsultas con ALL y ANY*/
 /*8*/
@@ -105,10 +107,11 @@ ON empleado.codigo_oficina = oficina.codigo_oficina
 WHERE empleado.codigo_empleado NOT IN (SELECT cliente.codigo_empleado_rep_ventas
 	FROM  cliente);
  
-/*16*/ 
-SELECT DISTINCT oficina.*
-FROM empleado LEFT JOIN oficina
-ON oficina.codigo_oficina  = empleado.codigo_oficina
+/*16*/
+SELECT *
+FROM  oficina 
+WHERE codigo_oficina NOT IN  (SELECT DISTINCT empleado.codigo_oficina
+FROM empleado 
 INNER JOIN  cliente 
 ON  empleado.codigo_empleado  = cliente.codigo_empleado_rep_ventas 
 INNER JOIN pedido
@@ -117,8 +120,7 @@ INNER JOIN detalle_pedido
 ON detalle_pedido.codigo_pedido  = pedido.codigo_pedido
 INNER JOIN producto
 ON  producto.codigo_producto  = detalle_pedido.codigo_producto
-WHERE producto.gama ='Frutales' AND oficina.codigo_oficina  IN (SELECT empleado.codigo_oficina
-	FROM  empleado);
+WHERE producto.gama ='Frutales');
 
 /*17*/
 SELECT *
