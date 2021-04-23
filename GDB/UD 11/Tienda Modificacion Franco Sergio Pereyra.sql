@@ -59,7 +59,7 @@ FROM fabricante;
 /*9*/
  UPDATE  fabricante SET codigo = '20' where nombre = 'Lenovo';
 -- No es posible modificarlo por que el codigo de Lenovo esta en la Foreing Key de la tabla producto --
-/* Para poder eliminarlo habria que hacer esto --> 
+/* Para poder modificarlo habria que hacer esto --> 
   CREATE TABLE producto (
   codigo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
