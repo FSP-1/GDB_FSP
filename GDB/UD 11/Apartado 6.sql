@@ -77,3 +77,18 @@ COMMIT;
 -- 7. ¿Qué devolverá esta consulta?
 SELECT *
 FROM cuentas;
+
+-- Dirty Read (Lectura sucia) --
+UPDATE cuentas SET saldo = saldo - 100 WHERE id = 1;	
+SELECT saldo FROM cuentas WHERE id = 1;
+ROLLBACK;
+
+-- Non-Repeatable Read (Lectura No Repetible) --
+SELECT saldo FROM cuentas WHERE id = 1;	
+UPDATE cuentas SET saldo = saldo - 100 WHERE id = 1;
+SELECT saldo FROM cuentas WHERE id = 1;	
+
+--  Phantom Read (Lectura fantasma) --
+SELECT SUM(saldo) FROM cuentas;	
+INSERT INTO cuentas VALUES (3, 3000);
+SELECT SUM(saldo) FROM cuentas;	
