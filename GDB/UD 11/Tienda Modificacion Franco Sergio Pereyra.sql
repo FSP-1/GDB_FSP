@@ -13,14 +13,15 @@ On producto.codigo_fabricante = fabricante.codigo;
 
 /*4*/
 CREATE TABLE fabricante_productos (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nombre_fabricante VARCHAR(100) NOT NULL, 
   nombre_producto VARCHAR(100) NOT NULL,
   precio DOUBLE NOT NULL
 );
 
 INSERT INTO fabricante_productos 
-SELECT fabricante.nombre , producto.nombre,producto.precio
-FROM producto inner join fabricante
+SELECT 0,fabricante.nombre , producto.nombre,producto.precio
+FROM fabricante inner join producto
 On producto.codigo_fabricante = fabricante.codigo;
 
 SELECT *
@@ -36,7 +37,7 @@ SELECT *
 FROM vista_fabricante_productos;
 
 /*7*/
- delete  from fabricante  where nombre = 'Asus';
+ delete  from fabricante  where nombre = 'Asus'; 
 -- No es posible eliminarlo por que el codigo de ASUS esta en la Foreing Key de la tabla producto --
 /* Para poder eliminarlo habria que hacer esto --> 
   CREATE TABLE producto (
@@ -46,6 +47,9 @@ FROM vista_fabricante_productos;
   codigo_fabricante INT UNSIGNED NOT NULL,
   FOREIGN KEY (codigo_fabricante) REFERENCES fabricante(codigo) ON DELETE CASCADE 
 ); */
+ALTER TABLE producto
+ADD FOREIGN KEY (codigo_fabricante) REFERENCES fabricante(codigo)
+ON DELETE CASCADE;
 
 SELECT *
 FROM fabricante;
@@ -67,6 +71,12 @@ FROM fabricante;
   codigo_fabricante INT UNSIGNED NOT NULL,
   FOREIGN KEY (codigo_fabricante) REFERENCES fabricante(codigo) ON UPDATE CASCADE 
 ); */
+ALTER TABLE producto
+DROP FOREIGN KEY producto_ibfk_1;
+
+ALTER TABLE producto
+ADD FOREIGN KEY (codigo_fabricante) REFERENCES fabricante(codigo)
+ON UPDATE CASCADE;
 
 SELECT *
 FROM fabricante;
@@ -86,7 +96,6 @@ FROM producto;
 
 /*12*/
 DELETE FROM producto
-WHERE precio < 200;
+WHERE nombre LIKE '%Impresora%' AND precio < 200;
 
-SELECT *
-FROM producto;
+
