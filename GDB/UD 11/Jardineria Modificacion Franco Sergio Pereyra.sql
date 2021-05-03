@@ -80,3 +80,25 @@ WHERE codigo_pedido = (SELECT codigo_pedido  FROM detalle_pedido WHERE codigo_pr
 
 SELECT *
 FROM cliente;
+
+/*11*/
+
+
+ALTER TABLE detalle_pedido ADD iva DECIMAL NOT NULL AFTER numero_linea;
+
+SET AUTOCOMMIT = 0;
+
+START TRANSACTION;
+ UPDATE detalle_pedido
+SET iva = 18
+WHERE codigo_pedido = (SELECT codigo_pedido
+FROM pedido
+WHERE YEAR(fecha_pedido)=2009 AND detalle_pedido.codigo_pedido = pedido.codigo_pedido);
+
+ rollback;
+ 
+SELECT *
+FROM detalle_pedido;
+
+SELECT *
+FROM pedido;
