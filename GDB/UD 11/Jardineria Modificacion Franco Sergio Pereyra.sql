@@ -1,21 +1,3 @@
-/*7*/
- delete  from fabricante  where nombre = 'Asus'; 
--- No es posible eliminarlo por que el codigo de ASUS esta en la Foreing Key de la tabla producto --
-/* Para poder eliminarlo habria que hacer esto --> 
-  CREATE TABLE producto (
-  codigo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL,
-  precio DOUBLE NOT NULL,
-  codigo_fabricante INT UNSIGNED NOT NULL,
-  FOREIGN KEY (codigo_fabricante) REFERENCES fabricante(codigo) ON DELETE CASCADE 
-); */
-ALTER TABLE producto
-ADD FOREIGN KEY (codigo_fabricante) REFERENCES fabricante(codigo)
-ON DELETE CASCADE;
-
-SELECT *
-FROM fabricante;
-
 /*1*/
  INSERT INTO oficina VALUES ('ALM-ES','Almeria','España','Almeria','05670','+34 987 43 564','BLA BLA','BLA2 BLA2');
  
@@ -83,22 +65,43 @@ FROM cliente;
 
 /*11*/
 
-
 ALTER TABLE detalle_pedido ADD iva DECIMAL NOT NULL AFTER numero_linea;
 
 SET AUTOCOMMIT = 0;
 
 START TRANSACTION;
- UPDATE detalle_pedido
+UPDATE detalle_pedido
 SET iva = 18
 WHERE codigo_pedido = (SELECT codigo_pedido
 FROM pedido
 WHERE YEAR(fecha_pedido)=2009 AND detalle_pedido.codigo_pedido = pedido.codigo_pedido);
 
- rollback;
- 
+
+UPDATE detalle_pedido
+SET iva = 21
+ WHERE codigo_pedido NOT IN (SELECT codigo_pedido
+FROM pedido
+WHERE YEAR(fecha_pedido)=2009 AND detalle_pedido.codigo_pedido = pedido.codigo_pedido);
+
 SELECT *
 FROM detalle_pedido;
 
+ rollback;
+
+/*12*/
+
+ALTER TABLE detalle_pedido ADD total_linea DECIMAL(15,2) NOT NULL AFTER iva;
+
+UPDATE detalle_pedido
+SET total_linea = precio_unidad*cantidad * (1 + (iva/100));
+
 SELECT *
-FROM pedido;
+FROM detalle_pedido;
+
+/*13*/
+ DELETE FROM cliente WHERE limite_credito = (SELECT MIN(limite_credito) FROM cliente);
+ 
+ -- No, por que no se puede especificar la eliminación o modificación de una tabla -- 
+
+SELECT *
+FROM cliente;
