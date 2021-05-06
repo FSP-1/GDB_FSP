@@ -111,4 +111,4 @@ SELECT * FROM fabricante;
 ROLLBACK;
 
 -- 14 --
--- Si --
+-- No --
