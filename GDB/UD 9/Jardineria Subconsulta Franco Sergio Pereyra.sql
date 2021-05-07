@@ -161,3 +161,22 @@ FROM detalle_pedido
 WHERE   EXISTS (SELECT pedido.codigo_pedido
 	FROM  pedido 
     WHERE pedido.codigo_pedido = detalle_pedido.codigo_pedido);
+    
+/*Test*/
+CREATE OR REPLACE VIEW Test AS
+ SELECT 
+        cliente.ciudad AS ciudad, 
+        pedido.codigo_pedido AS codigo_pedido, 
+        pedido.codigo_cliente AS a,
+        SUM(detalle_pedido.cantidad * detalle_pedido.precio_unidad) AS total_pedido
+    FROM cliente INNER JOIN pedido
+    ON cliente.codigo_cliente = pedido.codigo_cliente
+    INNER JOIN detalle_pedido
+    ON pedido.codigo_pedido = detalle_pedido.codigo_pedido
+    GROUP BY cliente.ciudad, pedido.codigo_pedido;
+    
+      
+SELECT Test.ciudad, COUNT(Test.a), MAX(Test.total_pedido), MIN(Test.total_pedido)
+FROM Test
+GROUP BY ciudad
+ORDER BY 2 DESC;
