@@ -1,6 +1,5 @@
 /*14*/
  INSERT INTO oficina VALUES ('GRA-ES','Granada','España','Granada','02395','+34 977 32 643','BLA BLA','BLA2 BLA2');
- 
 INSERT INTO empleado VALUES (32,'Paco ','Fezez','Parter','3456','pfezez@hotmail.es','GRA-ES',11,'Representante Ventas');
 INSERT INTO empleado VALUES (33,'Marta ','Mcgiver','Cady','3214','mafacgiverc@hotmail.es','GRA-ES',11,'Representante Ventas');
 INSERT INTO empleado VALUES (34,'Serena','Parket','Zaker','3578','sparket@hotmail.es','GRA-ES',11,'Representante Ventas');
@@ -17,13 +16,11 @@ SELECT *
 FROM cliente;
 
 /*16*/
-SET AUTOCOMMIT = 0;
 
 START TRANSACTION;
 INSERT INTO pedido VALUES (129,'2010-01-14','2010-01-20','2010-01-19','Entregado','El cliente llama para confirmar la fecha - Esperando al proveedor',39);
 INSERT INTO pedido VALUES (130,'2010-01-10','2011-12-30','2011-12-25','Entregado','El cliente llama para confirmar la fecha - Esperando al proveedor',40);
 INSERT INTO pedido VALUES (131,'2014-01-09','2014-11-30','2014-11-14','Entregado','El cliente llama para confirmar la fecha - Esperando al proveedor',41);
-ROLLBACK;
 
 SELECT *
 FROM pedido;
@@ -37,16 +34,22 @@ ALTER TABLE pedido
 ADD FOREIGN KEY (codigo_cliente) REFERENCES cliente(codigo_cliente)
 ON DELETE CASCADE;
 
-ALTER TABLE pago
-DROP FOREIGN KEY pago_ibfk_1;
+ALTER TABLE detalle_pedido
+DROP FOREIGN KEY detalle_pedido_ibfk_1;
 
-ALTER TABLE pago
-ADD FOREIGN KEY (codigo_cliente) REFERENCES cliente(codigo_cliente)
+ALTER TABLE detalle_pedido
+ADD FOREIGN KEY (codigo_pedido) REFERENCES pedido(codigo_pedido)
 ON DELETE CASCADE;
-
 
 DELETE FROM cliente WHERE codigo_cliente = '39';
 
 SELECT *
 FROM cliente;
+
 /*18*/
+START TRANSACTION;
+INSERT INTO pago VALUES (40,'PayPal','ak-std-000026','2021-05-26',1171);
+COMMIT;
+ 
+ SELECT *
+FROM pago;
