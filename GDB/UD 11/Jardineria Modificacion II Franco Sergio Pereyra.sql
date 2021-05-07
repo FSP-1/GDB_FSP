@@ -37,6 +37,14 @@ ALTER TABLE pedido
 ADD FOREIGN KEY (codigo_cliente) REFERENCES cliente(codigo_cliente)
 ON DELETE CASCADE;
 
+ALTER TABLE pago
+DROP FOREIGN KEY pago_ibfk_1;
+
+ALTER TABLE pago
+ADD FOREIGN KEY (codigo_cliente) REFERENCES cliente(codigo_cliente)
+ON DELETE CASCADE;
+
+
 DELETE FROM cliente WHERE codigo_cliente = '39';
 
 SELECT *
