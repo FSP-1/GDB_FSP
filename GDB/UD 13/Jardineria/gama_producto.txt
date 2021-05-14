@@ -1,0 +1,5 @@
+"Aromáticas","Plantas aromáticas",\N,\N
+"Frutales","Árboles pequeños de producción frutal",\N,\N
+"Herbaceas","Plantas para jardin decorativas",\N,\N
+"Herramientas","Herramientas para todo tipo de acción",\N,\N
+"Ornamentales","Plantas vistosas para la decoración del jardín",\N,\N
