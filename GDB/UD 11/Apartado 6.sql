@@ -1,3 +1,6 @@
+-- o --
+mysqldump -u root -p --fields-enclosed-by '"' --fields-terminated-by ',' --lines-terminated-by '\n' --tab /opt/csv jardineria
+
 -- Tema 11 Apartado 6 --
 DROP DATABASE IF EXISTS test;
 CREATE DATABASE test CHARACTER SET utf8mb4;
