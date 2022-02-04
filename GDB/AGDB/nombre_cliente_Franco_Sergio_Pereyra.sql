@@ -9,6 +9,5 @@ ON detalle_pedido.codigo_pedido = pedido.codigo_pedido
 INNER JOIN cliente
 ON cliente.codigo_cliente = pedido.codigo_cliente
 WHERE cliente.codigo_cliente = codigo_cliente
-group by cliente.codigo_cliente
 INTO nombre, total_gastado;
 END
